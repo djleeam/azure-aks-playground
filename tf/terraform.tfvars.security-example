@@ -1,0 +1,69 @@
+# Security-Enhanced Configuration Example
+# Copy this to terraform.tfvars and customize for your environment
+
+# Basic Configuration
+prefix              = "demo"
+resource_group_name = "demo-aks-rg"
+location           = "West US"
+cluster_name       = "demo-aks"
+
+# Node Configuration
+node_count = 2
+vm_size    = "Standard_D2s_v4"
+
+# AKS Tier Configuration
+sku_tier = "Free"
+
+# Security & Monitoring
+admin_username        = "azureuser"
+enable_azure_policy   = true
+enable_log_analytics  = true
+log_retention_in_days = 30
+
+# Networking
+network_plugin        = "azure"
+network_policy        = "azure"
+
+# SECURITY CONFIGURATIONS
+# ======================
+
+# Option 1: Keep public cluster but restrict API server access
+enable_private_cluster = false
+# Add your public IP addresses that should have access to the Kubernetes API
+# You can find your current IP by running: curl https://ipv4.icanhazip.com
+api_server_authorized_ip_ranges = [
+  "203.0.113.0/32",    # Replace with your office IP
+  "198.51.100.0/24",   # Replace with your VPN range
+  # "0.0.0.0/0"        # WARNING: This allows access from anywhere - NOT RECOMMENDED
+]
+
+# Option 2: Enable private cluster (RECOMMENDED for production)
+# enable_private_cluster = true
+# api_server_authorized_ip_ranges = []  # Not needed for private clusters
+
+# Additional Security Settings
+enable_network_security_group_rules = true
+
+# SSH access restrictions (optional - only if you need SSH access to nodes)
+allowed_ssh_ip_ranges = [
+  # "203.0.113.0/32",  # Replace with your IP for SSH access
+]
+
+# Tags
+tags = {
+  Environment = "demo"
+  Project     = "aks-playground"
+  ManagedBy   = "terraform"
+  Security    = "enhanced"
+}
+
+# SECURITY RECOMMENDATIONS:
+# ========================
+# 1. For production, set enable_private_cluster = true
+# 2. Always specify api_server_authorized_ip_ranges for public clusters
+# 3. Keep allowed_ssh_ip_ranges empty unless SSH access is required
+# 4. Consider upgrading to Standard or Premium SKU for production workloads
+# 5. Enable Azure Defender for Kubernetes in Azure Security Center
+# 6. Implement Pod Security Standards in your cluster
+# 7. Use Azure Key Vault for secret management
+# 8. Enable audit logging and monitor with Azure Monitor

@@ -1,0 +1,29 @@
+# Terraform files
+*.tfstate
+*.tfstate.*
+*.tfvars.backup
+*.tfplan
+.terraform/
+.terraform.lock.hcl
+
+# Sensitive files (contains IP addresses and other sensitive configuration)
+terraform.tfvars
+*.auto.tfvars
+terraform.tfvars.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Kubeconfig files
+kubeconfig*
+config
