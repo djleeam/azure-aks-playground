@@ -1,0 +1,69 @@
+# Simplified Airbyte values for playground/learning environment
+# This single file replaces common.yaml, dev.yaml, staging.yaml, prod.yaml
+
+airbyte:
+  enabled: true
+  
+  # Simple global configuration
+  global:
+    storageClass: "default"
+    
+  # Webapp with port-forward access (no ingress complexity)
+  webapp:
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 80
+    # Ingress disabled - use kubectl port-forward instead
+    ingress:
+      enabled: false
+
+  # Server configuration
+  server:
+    replicaCount: 1
+
+  # Worker configuration  
+  worker:
+    replicaCount: 1
+
+  # Simplified database (using defaults)
+  postgresql:
+    enabled: true
+    auth:
+      postgresPassword: "airbyte123"
+      database: "airbyte"
+    primary:
+      persistence:
+        enabled: true
+        size: 10Gi
+
+  # Simplified temporal (using defaults)
+  temporal:
+    enabled: true
+
+  # Simplified minio (using defaults)
+  minio:
+    enabled: true
+    auth:
+      rootUser: "minio"
+      rootPassword: "minio123"
+    persistence:
+      enabled: true
+      size: 10Gi
+
+  # Simple logging
+  logs:
+    level: "INFO"
+
+  # Disable complex features for playground
+  metrics:
+    enabled: false
+  
+  podDisruptionBudget:
+    enabled: false
+    
+  networkPolicy:
+    enabled: false
+
+# Development namespace for playground environment
+namespaceOverride: "airbyte-dev"

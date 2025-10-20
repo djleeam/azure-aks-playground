@@ -1,0 +1,33 @@
+apiVersion: v2
+name: airbyte-deployment
+description: Airbyte data integration platform deployment for AKS
+type: application
+version: 1.0.0
+appVersion: "2.0.0"
+
+# Dependencies - using the official Airbyte Helm chart v2
+dependencies:
+  - name: airbyte
+    version: "2.0.18"  # Latest stable version of chart v2
+    repository: "https://airbytehq.github.io/charts"
+    condition: airbyte.enabled
+
+maintainers:
+  - name: "AKS Team"
+    email: "aks-team@company.com"
+
+keywords:
+  - airbyte
+  - data-integration
+  - etl
+  - elt
+  - data-pipeline
+
+home: https://airbyte.com
+sources:
+  - https://github.com/airbytehq/airbyte-platform
+  - https://github.com/airbytehq/airbyte-platform/tree/main/charts/v2
+
+annotations:
+  category: "Data Integration"
+  licenses: "MIT"

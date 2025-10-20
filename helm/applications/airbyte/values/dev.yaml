@@ -1,0 +1,147 @@
+# Development environment specific values
+# These values override common.yaml for development deployments
+
+airbyte:
+  # Development-specific global settings
+  global:
+    # Use smaller resource requests for development
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+
+  # Webapp configuration for development
+  webapp:
+    replicaCount: 1
+    
+    # Enable ingress for development with simple hostname
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+      hosts:
+        - host: airbyte-dev.local
+          paths:
+            - path: /
+              pathType: Prefix
+      # No TLS for development
+      tls: []
+    
+    # Development resource limits
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+
+  # Server configuration for development
+  server:
+    replicaCount: 1
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+
+  # Worker configuration for development
+  worker:
+    replicaCount: 1
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+
+  # Database configuration for development
+  postgresql:
+    enabled: true
+    auth:
+      postgresPassword: "airbyte-dev-123"
+      database: "airbyte_dev"
+    primary:
+      persistence:
+        enabled: true
+        size: 10Gi  # Smaller storage for dev
+        storageClass: "default"
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+        requests:
+          memory: "256Mi"
+          cpu: "250m"
+
+  # Temporal configuration for development
+  temporal:
+    enabled: true
+    server:
+      replicaCount: 1
+      resources:
+        limits:
+          memory: "512Mi"
+          cpu: "500m"
+        requests:
+          memory: "256Mi"
+          cpu: "250m"
+
+  # Minio configuration for development
+  minio:
+    enabled: true
+    auth:
+      rootUser: "minio-dev"
+      rootPassword: "minio-dev-123"
+    persistence:
+      enabled: true
+      size: 10Gi  # Smaller storage for dev
+      storageClass: "default"
+    resources:
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+
+  # Jobs configuration for development
+  jobs:
+    resources:
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+
+  # Logs configuration for development
+  logs:
+    level: "DEBUG"  # More verbose logging for development
+
+  # Metrics for development
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false  # Disable Prometheus monitoring in dev
+
+  # Network policies disabled for easier development
+  networkPolicy:
+    enabled: false
+
+  # Development-specific labels
+  commonLabels:
+    environment: "development"
+    team: "data-engineering"
+    cost-center: "development"
+
+# Namespace configuration
+namespaceOverride: "airbyte-dev"

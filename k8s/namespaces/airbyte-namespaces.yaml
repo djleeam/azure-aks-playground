@@ -1,0 +1,17 @@
+# Kubernetes namespace for Airbyte development environment
+# Apply with: kubectl apply -f k8s/namespaces/airbyte-namespaces.yaml
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: airbyte-dev
+  labels:
+    name: airbyte-dev
+    environment: development
+    app: airbyte
+    managed-by: helm
+  annotations:
+    description: "Airbyte development environment for playground/learning"
+    team: "data-engineering"
+    cost-center: "development"

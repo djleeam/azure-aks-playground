@@ -1,0 +1,138 @@
+# Common values shared across all environments
+# These values are merged with environment-specific values
+
+airbyte:
+  enabled: true
+  
+  # Global configuration
+  global:
+    # Image registry and repository settings
+    imageRegistry: ""
+    imagePullPolicy: IfNotPresent
+    
+    # Storage class for persistent volumes
+    storageClass: "default"
+    
+    # Security context
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      fsGroup: 1000
+    
+    # Resource limits and requests (will be overridden per environment)
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+
+  # Webapp configuration
+  webapp:
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 80
+    
+    # Ingress configuration (disabled by default, enable per environment)
+    ingress:
+      enabled: false
+      className: "nginx"
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      hosts: []
+      tls: []
+
+  # Server configuration
+  server:
+    replicaCount: 1
+    service:
+      type: ClusterIP
+      port: 8001
+
+  # Worker configuration
+  worker:
+    replicaCount: 1
+
+  # Airbyte Bootloader
+  bootloader:
+    image:
+      repository: airbyte/bootloader
+      tag: "2.0.0"
+
+  # Database configuration
+  postgresql:
+    enabled: true
+    auth:
+      postgresPassword: "airbyte123"  # Change this in production!
+      database: "airbyte"
+    primary:
+      persistence:
+        enabled: true
+        size: 20Gi
+        storageClass: "default"
+
+  # Temporal configuration (for workflow orchestration)
+  temporal:
+    enabled: true
+    server:
+      replicaCount: 1
+    
+  # Minio configuration (for log storage)
+  minio:
+    enabled: true
+    auth:
+      rootUser: "minio"
+      rootPassword: "minio123"  # Change this in production!
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: "default"
+
+  # Logs configuration
+  logs:
+    # Log level
+    level: "INFO"
+    
+    # Storage configuration
+    storage:
+      type: "minio"  # Can be "minio", "s3", "gcs", etc.
+
+  # Jobs configuration
+  jobs:
+    # Resource limits for connector jobs
+    resources:
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+
+  # Metrics and monitoring
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: false  # Enable if you have Prometheus operator
+
+  # Pod disruption budgets
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 1
+
+  # Network policies
+  networkPolicy:
+    enabled: false  # Enable per environment as needed
+
+  # Service account
+  serviceAccount:
+    create: true
+    annotations: {}
+    name: ""
+
+  # Node selector and tolerations
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}

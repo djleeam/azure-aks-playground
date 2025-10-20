@@ -1,17 +1,22 @@
 # Azure AKS Terraform Playground
 
-This repository contains Terraform configuration for deploying an Azure Kubernetes Service (AKS) cluster using the official [Azure AKS Terraform module](https://registry.terraform.io/modules/Azure/aks/azurerm/latest).
+This repository demonstrates a complete Azure Kubernetes Service (AKS) deployment with application management using Terraform for infrastructure and Helm for applications.
 
 ## 🏗️ Architecture
 
-The setup includes:
-
+### Infrastructure Layer (Terraform)
 - **AKS Cluster** with system node pool
 - **Azure Policy** integration for governance
 - **Log Analytics** workspace for monitoring
 - **Azure CNI** networking with network policies
 - **System-assigned managed identity**
 - **RBAC** enabled for security
+
+### Application Layer (Helm)
+- **Airbyte** data integration platform (Chart v2)
+- **Environment separation** (dev, staging, prod)
+- **Automated deployment scripts**
+- **Security and monitoring integration**
 
 ## 📋 Prerequisites
 
@@ -73,10 +78,19 @@ terraform plan
 terraform apply
 ```
 
-### 6. Connect to Your Cluster
+### 6. Connect to Your Cluster and Deploy Applications
 ```bash
 # Get cluster credentials
 az aks get-credentials --resource-group demo-aks-rg --name demo-aks
+
+# Navigate to Helm directory
+cd ../helm
+
+# Connect to cluster (automated)
+./scripts/connect-cluster.sh
+
+# Deploy Airbyte to development environment
+./scripts/deploy.sh airbyte dev
 
 # Launch k9s to manage your cluster
 k9s
@@ -84,15 +98,66 @@ k9s
 
 > **💡 Pro Tip**: k9s provides an intuitive terminal UI for Kubernetes. Use `:nodes` to view nodes, `:pods` for pods, `:svc` for services, and much more!
 
-## 📁 File Structure
+## 🚀 Quick Start Options
+
+### Option 1: 5-Minute Quick Start ⚡ (Recommended for Learning)
+
+```bash
+# Deploy AKS + Airbyte in 5 minutes
+cd tf && terraform apply -auto-approve
+cd ../helm && ./quick-start.sh
+
+# Access at: http://localhost:8080
+```
+
+See [QUICK-START.md](QUICK-START.md) for the fastest way to get started.
+
+### Option 2: Production-Ready Deployment 🏗️
+
+```bash
+# Navigate to helm directory
+cd helm
+
+# Deploy Airbyte to different environments
+./scripts/deploy.sh airbyte dev      # Development
+./scripts/deploy.sh airbyte staging  # Staging
+./scripts/deploy.sh airbyte prod     # Production
+```
+
+For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+## 📁 Project Structure
 
 ```
-tf/
-├── main.tf           # Main AKS module configuration
-├── variables.tf      # Input variable definitions
-├── terraform.tfvars  # Variable values
-├── outputs.tf        # Output definitions
-└── providers.tf      # Provider and version constraints
+azure-aks-playground/
+├── README.md                 # This file
+├── DEPLOYMENT.md             # Step-by-step deployment guide
+├── SECURITY.md               # Security configuration guide
+├── NETWORK.md                # Network configuration details
+├── tf/                       # Infrastructure (Terraform)
+│   ├── main.tf              # Main AKS module configuration
+│   ├── variables.tf         # Input variable definitions
+│   ├── terraform.tfvars     # Variable values
+│   ├── outputs.tf           # Output definitions
+│   └── providers.tf         # Provider and version constraints
+├── helm/                     # Application deployments (Helm)
+│   ├── README.md            # Helm-specific documentation
+│   ├── scripts/             # Deployment automation scripts
+│   │   ├── connect-cluster.sh
+│   │   ├── deploy.sh
+│   │   └── cleanup.sh
+│   └── applications/        # Application configurations
+│       └── airbyte/         # Airbyte data integration platform
+│           ├── Chart.yaml
+│           ├── values-simplified.yaml  # Simplified configuration
+│           └── values/      # Configuration files
+│               ├── common.yaml
+│               └── dev.yaml
+├── k8s/                     # Raw Kubernetes manifests
+│   ├── namespaces/
+│   └── secrets/
+└── docs/                    # Additional documentation
+    └── helm-deployment-guide.md
 ```
 
 ## 🎮 Managing Your Cluster with k9s
@@ -192,13 +257,22 @@ To destroy all resources:
 terraform destroy
 ```
 
-## 📚 Additional Resources
+## 📚 Documentation
+
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete step-by-step deployment guide
+- **[SECURITY.md](SECURITY.md)** - Security configuration and best practices
+- **[NETWORK.md](NETWORK.md)** - Network configuration details
+- **[helm/README.md](helm/README.md)** - Helm-specific documentation
+- **[docs/helm-deployment-guide.md](docs/helm-deployment-guide.md)** - Advanced Helm deployment guide
+
+## 📚 External Resources
 
 - [Azure AKS Documentation](https://docs.microsoft.com/en-us/azure/aks/)
 - [Azure AKS Terraform Module](https://registry.terraform.io/modules/Azure/aks/azurerm/latest)
 - [Terraform Azure Provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest)
+- [Helm Documentation](https://helm.sh/docs/)
+- [Airbyte Helm Chart v2](https://docs.airbyte.com/platform/deploying-airbyte/chart-v2-community)
 - [k9s Documentation](https://k9scli.io/)
-- [k9s GitHub Repository](https://github.com/derailed/k9s)
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
 
 ## 🤝 Contributing
